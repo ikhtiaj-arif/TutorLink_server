@@ -1,11 +1,17 @@
-import express from "express";
-import auth from "../../middlewears/auth";
-import { userControllers } from "./user.controllers";
+import { Router } from "express";
 
-const router = express.Router();
+import clientInfoParser from "../../middlewears/clientInfoParser";
+import ValidateRequest from "../../middlewears/ValidateRequest";
+import { UserController } from "./user.controllers";
+import { UserValidation } from "./user.validation";
 
-const { blockUser } = userControllers;
+const router = Router();
 
-router.patch("/admin/users/:userId/block", auth("admin"), blockUser);
+router.post(
+  "/",
+  clientInfoParser,
+  ValidateRequest(UserValidation.userValidationSchema),
+  UserController.registerUser
+);
 
-export const userRoutes = router;
+export const UserRoutes = router;
