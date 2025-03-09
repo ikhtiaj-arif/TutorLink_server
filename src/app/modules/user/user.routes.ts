@@ -1,16 +1,16 @@
 import { Router } from "express";
 
+import { UserController } from "./user.controllers";
 import clientInfoParser from "../../middlewears/clientInfoParser";
 import ValidateRequest from "../../middlewears/ValidateRequest";
-import { UserController } from "./user.controllers";
 import { UserValidation } from "./user.validation";
 
 const router = Router();
 
 router.post(
   "/",
-  clientInfoParser,
-  ValidateRequest(UserValidation.userValidationSchema),
+    clientInfoParser,
+    ValidateRequest(UserValidation.userValidationSchema),
   UserController.registerUser
 );
 
