@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 import config from "../../config";
 import AppError from "../../errors/AppError";
 
-import { IAuth, IJwtPayload } from "./auth.interface";
-import { createToken, verifyToken } from "./auth.utils";
-import { StatusCodes } from 'http-status-codes';
+import { StatusCodes } from "http-status-codes";
 import { Secret } from "jsonwebtoken";
 import User from "../user/user.model";
+import { IAuth, IJwtPayload } from "./auth.interface";
+import { createToken, verifyToken } from "./auth.utils";
 
 const loginUser = async (payload: IAuth) => {
   const session = await mongoose.startSession();
@@ -19,10 +19,6 @@ const loginUser = async (payload: IAuth) => {
       throw new AppError(StatusCodes.NOT_FOUND, "This user is not found!");
     }
 
-    if (!user.isActive) {
-      throw new AppError(StatusCodes.FORBIDDEN, "This user is not active!");
-    }
-
     if (!(await User.isPasswordMatched(payload?.password, user?.password))) {
       throw new AppError(StatusCodes.FORBIDDEN, "Password does not match");
     }
@@ -31,8 +27,6 @@ const loginUser = async (payload: IAuth) => {
       userId: user._id as string,
       name: user.name as string,
       email: user.email as string,
-      hasShop: user.hasShop,
-      isActive: user.isActive,
       role: user.role,
     };
 
@@ -83,16 +77,10 @@ const refreshToken = async (token: string) => {
     throw new AppError(StatusCodes.NOT_FOUND, "User does not exist");
   }
 
-  if (!isUserExist.isActive) {
-    throw new AppError(StatusCodes.BAD_REQUEST, "User is not active");
-  }
-
   const jwtPayload: IJwtPayload = {
     userId: isUserExist._id as string,
     name: isUserExist.name as string,
     email: isUserExist.email as string,
-    hasShop: isUserExist.hasShop,
-    isActive: isUserExist.isActive,
     role: isUserExist.role,
   };
 

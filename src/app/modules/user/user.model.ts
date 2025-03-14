@@ -25,8 +25,8 @@ const userSchema = new Schema<IUser, UserModel>(
     },
     role: {
       type: String,
-      enum: [UserRole.ADMIN, UserRole.USER],
-      default: UserRole.USER,
+      enum: [ UserRole.STUDENT, UserRole.TUTOR],
+      default: UserRole.STUDENT,
     },
 
     clientInfo: {
@@ -53,14 +53,18 @@ const userSchema = new Schema<IUser, UserModel>(
         type: String,
       },
     },
-    lastLogin: {
-      type: Date,
-      default: Date.now,
-    },
-    isActive: {
+    availability: {
       type: Boolean,
-      default: true,
+      default: true
     },
+    rating: {
+      type: Number,
+      default: 0
+    },
+    bio: {
+      type: String
+    }
+
   },
   {
     timestamps: true,
@@ -108,9 +112,7 @@ userSchema.statics.checkUserExist = async function (userId: string) {
     throw new AppError(StatusCodes.NOT_ACCEPTABLE, "User does not exist!");
   }
 
-  if (!existingUser.isActive) {
-    throw new AppError(StatusCodes.NOT_ACCEPTABLE, "User is not active!");
-  }
+
 
   return existingUser;
 };

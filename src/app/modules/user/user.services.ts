@@ -17,9 +17,8 @@ const registerUser = async (userData: IUser) => {
 
    try {
       session.startTransaction();
-
-      if ([UserRole.ADMIN].includes(userData.role)) {
-         throw new AppError(StatusCodes.NOT_ACCEPTABLE, 'Invalid role. Only User is allowed.');
+      if (!userData.role) {
+         throw new AppError(StatusCodes.NOT_ACCEPTABLE, 'Invalid role.');
       }
 
       // Check if the user already exists by email
@@ -32,11 +31,6 @@ const registerUser = async (userData: IUser) => {
       const user = new User(userData);
       const createdUser = await user.save({ session });
 
-      const profile = new Customer({
-         user: createdUser._id,
-      });
-
-      await profile.save({ session });
 
       await session.commitTransaction();
 
@@ -74,7 +68,7 @@ const myProfile = async (authUser: IJwtPayload) => {
    if (!isUserExists) {
       throw new AppError(StatusCodes.NOT_FOUND, "User not found!");
    }
-   if (!isUserExists.isActive) {
+   if (!isUserExists.availability) {
       throw new AppError(StatusCodes.BAD_REQUEST, "User is not active!");
    }
 
