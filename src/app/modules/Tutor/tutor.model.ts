@@ -1,55 +1,68 @@
-import { Schema, model, Document, Types } from 'mongoose';
-import { ITutor } from './tutor.interface'; // Make sure the ITutor interface is defined correctly
+import { Schema, model, Document, Types } from "mongoose";
+import { ITutor } from "./tutor.interface"; // Ensure the ITutor interface is imported correctly
 
 const tutorSchema = new Schema<ITutor>(
   {
-    name: {
-      type: String,
-      required: [true, 'Tutor name is required'],
+    user: {
+      type: String, // This should be a reference to the User model
+      required: [true, "User id is required"],
+      ref: "User",
       unique: true,
-      trim: true,
     },
+    // name: {
+    //   type: String,
+    //   required: [true, "Name is required"], // Added as per the interface
+    //   trim: true,
+    // },
+    // password: {
+    //   type: String,
+    //   required: [true, "Password is required"], // Added as per the interface
+    // },
+    // email: {
+    //   type: String,
+    //   required: [true, "Email is required"],
+    //   unique: true, // Ensure unique email
+    //   lowercase: true,
+    //   trim: true,
+    // },
     location: {
       type: String,
-      required: [true, 'Tutor location is required'],
-      trim: true,
-    },
-    subject: {
-      type: String,
-      required: [true, 'Subject is required'],
+      required: [true, "Location is required"],
       trim: true,
     },
     rate: {
       type: String,
-      required: [true, 'Rate is required'],
+      required: [true, "Rate is required"],
       trim: true,
     },
-    rating: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 5,
-    },
-    reviews: {
-      type: [String],
-      default: [],
-    },
-    imgUrl: {
-      type: [String],
-      required: [true, 'Image URL is required'],
-    },
-    badge: {
+   
+
+    about: {
       type: String,
-      default: null,
-    },
-    availability: {
-      type: String,
-      required: [true, 'Availability is required'],
+      required: [true, "About is required"],
       trim: true,
+    },
+    subject: { type: String, required: [true, "Subject is required"] },
+    aboutLesson: {
+      type: String,
+      required: [true, "About lesson is required"],
+      trim: true,
+    },
+    intro: {
+      type: String,
+      required: [true, "Introduction is required"],
+      trim: true,
+    },
+    imageUrls: {
+      type: [String],
+      required: [true, "Image URLs are required"],
+    },
+    firstLessonFree: {
+      type: Boolean,
     },
     responseTime: {
       type: String,
-      required: [true, 'Response time is required'],
+     
       trim: true,
     },
     numberOfStudents: {
@@ -57,47 +70,46 @@ const tutorSchema = new Schema<ITutor>(
       default: 0,
       min: 0,
     },
-    about: {
+    badge: {
       type: String,
-      required: [true, 'About is required'],
-      trim: true,
+      default: null,
     },
-    aboutLesson: {
-      type: String,
-      required: [true, 'About lesson is required'],
-      trim: true,
+ 
+    reviews: {
+      type: [String],
+      default: [],
     },
-    intro: {
-      type: String,
-      required: [true, 'Introduction is required'],
-      trim: true,
-    },
-    firstLessonFree: {
-      type: Boolean,
-      required: [true, 'First lesson free status is required'],
-    },
+    // clientInfo: {
+    //   device: {
+    //     type: String,
+    //     required: [true, "Device is required"],
+    //     enum: ["pc", "mobile"], // Enum to restrict values to 'pc' or 'mobile'
+    //   },
+    //   browser: {
+    //     type: String,
+    //     required: [true, "Browser is required"],
+    //   },
+    //   ipAddress: {
+    //     type: String,
+    //     required: [true, "IP address is required"],
+    //   },
+    //   pcName: {
+    //     type: String,
+    //     default: null,
+    //   },
+    //   os: {
+    //     type: String,
+    //     default: null,
+    //   },
+    //   userAgent: {
+    //     type: String,
+    //     default: null,
+    //   },
+    // },
   },
   {
-    timestamps: true,
+    timestamps: true, // Automatically add createdAt and updatedAt fields
   }
 );
 
-// Middleware to auto-generate the slug or ensure any other required field
-// tutorSchema.pre<ITutor>('validate', function (next) {
-//   if (this.isModified('name') && !this.slug) {
-//     this.slug = this.name
-//       .toLowerCase()
-//       .replace(/ /g, '-')
-//       .replace(/[^\w-]+/g, '');
-//   }
-//   next();
-// });
-
-// // Example method to calculate the rating or offer details (you can add custom logic here)
-// tutorSchema.methods.calculateDiscountedRate = async function () {
-//   // You can add logic to calculate a discounted rate based on specific conditions
-//   // For now, returning the same rate
-//   return this.rate;
-// };
-
-export const Tutor = model<ITutor>('Tutor', tutorSchema);
+export const Tutor = model<ITutor>("Tutor", tutorSchema);

@@ -1,10 +1,12 @@
 import { Router } from "express";
 
 import { multerUpload } from "../../config/multer.config";
+import auth from "../../middlewears/auth";
+import { parseBody } from "../../middlewears/bodyParser";
 import ValidateRequest from "../../middlewears/ValidateRequest";
+import { UserRole } from "../user/user.interface";
 import { TutorController } from "./tutor.controllers";
 import { tutorValidation } from "./tutor.validations";
-import { parseBody } from "../../middlewears/bodyParser";
 
 const router = Router();
 
@@ -21,14 +23,22 @@ const router = Router();
 //    TutorController.getMyTutors
 // );
 
+router.get("/my-profile", auth(UserRole.TUTOR), TutorController.getProfileData);
 // // Get a single tutor by their ID
-// router.get('/:tutorId', TutorController.getSingleTutor);
+router.get("/:tutorId", TutorController.getSingleTutor);
 
 // Create a new tutor profile
 router.post(
+  "/register",
+  multerUpload.fields([{ name: "images" }]), // You can adjust this to the correct field name if needed
+  parseBody,
+  // ValidateRequest(tutorValidation.createTutorValidationSchema),
+  TutorController.createTutorReg
+);
+router.post(
   "/",
-  // auth(UserRole.TUTOR),
-  multerUpload.fields([{ name: "image" }]), // You can adjust this to the correct field name if needed
+  auth(UserRole.STUDENT),
+  multerUpload.fields([{ name: "images" }]), // You can adjust this to the correct field name if needed
   parseBody,
   ValidateRequest(tutorValidation.createTutorValidationSchema),
   TutorController.createTutor

@@ -9,9 +9,13 @@ const router = Router();
 
 router.post(
   "/",
-    clientInfoParser,
-    ValidateRequest(UserValidation.userValidationSchema),
+  clientInfoParser,
+  ValidateRequest(UserValidation.userValidationSchema),
   UserController.registerUser
 );
+
+router.post("/create-students", UserController.createStudent);
+
+router.post("/create-tutor", UserController.createTutor);
 
 export const UserRoutes = router;

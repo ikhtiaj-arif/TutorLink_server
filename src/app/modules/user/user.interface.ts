@@ -2,7 +2,7 @@ import { Document, Model } from "mongoose";
 
 // Enum for User Roles
 export enum UserRole {
-  // ADMIN = 'admin',
+  ADMIN = "admin",
   STUDENT = "student",
   TUTOR = "tutor",
 }
@@ -27,6 +27,12 @@ export interface IUser extends Document {
   };
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface INewUser {
+  password: string;
+  role: string;
+  email: string;
 }
 
 export interface UserModel extends Model<IUser> {

@@ -1,19 +1,31 @@
+import { Types } from "mongoose";
+import { IUser } from "../user/user.interface";
+
 export interface ITutor {
-  name: string;
-  email: string;
+  user: string;
+  // name:string;
+  // email: string;
+  // password: string;
   location: string;
-  subject: string;
   rate: string;
-  rating: number;
-  reviews: string[];
-  imgUrl: string[];
-  badge?: string;
-  availability: string;
-  responseTime: string;
-  numberOfStudents: number;
+  subject: string;
   about: string;
   aboutLesson: string;
   intro: string;
-  firstLessonFree: boolean;
+  imageUrls: string[];
+  responseTime?: string;
+  badge?: string;
+  numberOfStudents?: number;
+  reviews?: string[];
+  firstLessonFree?: boolean;
+  // clientInfo: {
+  //   device: "pc" | "mobile"; // Device type
+  //   browser: string; // Browser name
+  //   ipAddress: string; // User IP address
+  //   pcName?: string; // Optional PC name
+  //   os?: string; // Optional OS name (Windows, MacOS, etc.)
+  //   userAgent?: string; // Optional user agent string
+  // };
 }
 // types/tutor.ts
+export type ITutorWithUserData = ITutor & IUser;

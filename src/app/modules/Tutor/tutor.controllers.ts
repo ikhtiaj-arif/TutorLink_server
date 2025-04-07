@@ -6,11 +6,41 @@ import { StatusCodes } from "http-status-codes";
 import { IImageFiles } from "../../interface/IImageFIle";
 import catchAsync from "../../utils/CatchAsync";
 import sendResponse from "../../utils/SendResponse";
+import { IJwtPayload } from "../Auth/auth.interface";
+import config from "../../config";
 
+const createTutorReg = catchAsync(async (req: Request, res: Response) => {
+ 
+  const result = await TutorService.createTutorReg(
+    req.body,
+    req.files as IImageFiles,
+ 
+  );
+  const { refreshToken, accessToken } = result;
+
+  res.cookie("refreshToken", refreshToken, {
+    secure: config.NODE_ENV === "production",
+    httpOnly: true,
+    sameSite: "none",
+    maxAge: 1000 * 60 * 60 * 24 * 365,
+  });
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Tutor registration completed successfully!",
+    data: {
+      accessToken,
+    },
+  });
+});
 const createTutor = catchAsync(async (req: Request, res: Response) => {
+  // console.log(req.body, req.files, req.user);
+  // return;
   const result = await TutorService.createTutor(
     req.body,
-    req.files as IImageFiles // If you're uploading tutor profile images
+    req.files as IImageFiles,
+    req.user as IJwtPayload
   );
   console.log(req.body, req.files, req.user);
   sendResponse(res, {
@@ -45,17 +75,27 @@ const createTutor = catchAsync(async (req: Request, res: Response) => {
 //   });
 // });
 
-// const getSingleTutor = catchAsync(async (req, res) => {
-//   const { tutorId } = req.params;
-//   const result = await TutorService.getSingleTutor(tutorId);
+const getSingleTutor = catchAsync(async (req, res) => {
+  const { tutorId } = req.params;
+  const result = await TutorService.getSingleTutor(tutorId);
 
-//   sendResponse(res, {
-//     statusCode: StatusCodes.OK,
-//     success: true,
-//     message: "Tutor retrieved successfully",
-//     data: result,
-//   });
-// });
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Tutor retrieved successfully",
+    data: result,
+  });
+});
+const getProfileData = catchAsync(async (req, res) => {
+  const result = await TutorService.getProfileData(req.user as IJwtPayload);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Tutor retrieved successfully",
+    data: result,
+  });
+});
 
 // const getMyTutors = catchAsync(async (req, res) => {
 //   const result = await TutorService.getMyTutors(req.query, req.user as IJwtPayload);
@@ -113,4 +153,6 @@ const createTutor = catchAsync(async (req: Request, res: Response) => {
 
 export const TutorController = {
   createTutor,
+  getSingleTutor,
+  getProfileData,createTutorReg
 };

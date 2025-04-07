@@ -8,6 +8,50 @@ import sendResponse from "../../utils/SendResponse";
 import { IJwtPayload } from "../Auth/auth.interface";
 import { UserServices } from "./user.services";
 
+const createStudent = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserServices.createStudentDB(req.body);
+
+  const { refreshToken, accessToken } = result;
+
+  res.cookie("refreshToken", refreshToken, {
+    secure: config.NODE_ENV === "production",
+    httpOnly: true,
+    sameSite: "none",
+    maxAge: 1000 * 60 * 60 * 24 * 365,
+  });
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "User registration completed successfully!",
+    data: {
+      accessToken,
+    },
+  });
+});
+
+const createTutor = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserServices.createTutorDB(req.body);
+
+  const { refreshToken, accessToken } = result;
+
+  res.cookie("refreshToken", refreshToken, {
+    secure: config.NODE_ENV === "production",
+    httpOnly: true,
+    sameSite: "none",
+    maxAge: 1000 * 60 * 60 * 24 * 365,
+  });
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Tutor registration completed successfully!",
+    data: {
+      accessToken,
+    },
+  });
+});
+
 const registerUser = catchAsync(async (req: Request, res: Response) => {
   const result = await UserServices.registerUser(req.body);
 
@@ -84,6 +128,8 @@ export const UserController = {
   registerUser,
   getAllUser,
   myProfile,
+  createTutor,
+  createStudent,
   //  updateUserStatus,
   //  updateProfile,
 };
