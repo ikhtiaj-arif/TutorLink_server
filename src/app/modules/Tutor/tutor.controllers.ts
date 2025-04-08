@@ -51,17 +51,17 @@ const createTutor = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// const getAllTutors = catchAsync(async (req, res) => {
-//   const result = await TutorService.getAllTutors(req.query);
+const getAllTutors = catchAsync(async (req, res) => {
+  const result = await TutorService.getAllTutors(req.query);
 
-//   sendResponse(res, {
-//     statusCode: StatusCodes.OK,
-//     success: true,
-//     message: "Tutors are retrieved successfully",
-//     meta: result.meta,
-//     data: result.result,
-//   });
-// });
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Tutors are retrieved successfully",
+    meta: result.meta,
+    data: result.result,
+  });
+});
 
 // const getTrendingTutors = catchAsync(async (req, res) => {
 //   const { limit } = req.query;
@@ -154,5 +154,5 @@ const getProfileData = catchAsync(async (req, res) => {
 export const TutorController = {
   createTutor,
   getSingleTutor,
-  getProfileData,createTutorReg
+  getProfileData,createTutorReg,getAllTutors
 };

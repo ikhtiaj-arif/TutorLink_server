@@ -85,7 +85,7 @@ class QueryBuilder<T> {
 
         if (minPrice !== undefined || maxPrice !== undefined) {
             this.modelQuery = this.modelQuery.find({
-                price: priceFilter,
+                rate: priceFilter,
             } as FilterQuery<T>);
         }
 

@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { IUser } from "../user/user.interface";
 
 export interface ITutor {
-  user: string;
+  user: Types.ObjectId;
   // name:string;
   // email: string;
   // password: string;

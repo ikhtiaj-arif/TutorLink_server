@@ -4,16 +4,17 @@ import QueryBuilder from "../../builder/QureyBuilder";
 import AppError from "../../errors/AppError";
 import { IImageFiles } from "../../interface/IImageFIle";
 import { IJwtPayload } from "../Auth/auth.interface";
+import { AuthServices } from "../Auth/auth.services";
+import { UserRole } from "../user/user.interface";
 import User from "../user/user.model";
 import { ITutor, ITutorWithUserData } from "./tutor.interface";
 import { Tutor } from "./tutor.model";
-import { UserRole } from "../user/user.interface";
-import { AuthServices } from "../Auth/auth.services";
 
 const createTutorReg = async (
   tutorData: Partial<ITutorWithUserData>, // Tutor data from the registration form
   tutorImage: IImageFiles // Image files for the tutor
 ) => {
+
   const { images } = tutorImage;
   const session = await mongoose.startSession();
 
@@ -50,13 +51,11 @@ const createTutorReg = async (
     // Save the user (will throw an error if email is already registered)
     const createdUser = await newUser.save({ session });
 
-
     const { email, password, name, ...tutorDataWithoutCredentials } = tutorData;
-    
 
     // Create the tutor profile
     const newTutor = new Tutor({
-    ...tutorDataWithoutCredentials,
+      ...tutorDataWithoutCredentials,
       user: createdUser._id, // Assign the new user's _id to the user field in Tutor model
     });
 
@@ -70,11 +69,10 @@ const createTutorReg = async (
     return await AuthServices.loginUser({
       email: createdUser.email,
       password: tutorData.password as string,
-      clientInfo: createdUser.clientInfo, // Assuming clientInfo is part of the tutorData
+      clientInfo: tutorData.clientInfo!, // Assuming clientInfo is part of the tutorData
     });
 
-   // Return the created tutor and the generated token
-
+    // Return the created tutor and the generated token
   } catch (error) {
     if (session.inTransaction()) {
       await session.abortTransaction();
@@ -182,7 +180,8 @@ const getAllTutors = async (query: Record<string, unknown>) => {
   }
 
   const tutorQuery = new QueryBuilder(
-    Tutor.find(filter).populate("shop", "shopName").populate("reviews"),
+    // Tutor.find(filter).populate("shop", "shopName").populate("reviews"),
+    Tutor.find(filter).populate("user"),
     pQuery
   )
     .search(["name", "subject", "about"])
@@ -331,7 +330,7 @@ export const TutorService = {
   createTutor,
   getAllTutors,
   createTutorReg,
-
+ 
   getSingleTutor,
   getProfileData,
   deleteTutor,

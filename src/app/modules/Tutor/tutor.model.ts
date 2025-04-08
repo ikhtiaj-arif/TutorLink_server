@@ -4,7 +4,7 @@ import { ITutor } from "./tutor.interface"; // Ensure the ITutor interface is im
 const tutorSchema = new Schema<ITutor>(
   {
     user: {
-      type: String, // This should be a reference to the User model
+      type: Schema.Types.ObjectId, // This should be a reference to the User model
       required: [true, "User id is required"],
       ref: "User",
       unique: true,

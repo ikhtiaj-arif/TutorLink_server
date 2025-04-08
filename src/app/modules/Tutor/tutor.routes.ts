@@ -11,7 +11,7 @@ import { tutorValidation } from "./tutor.validations";
 const router = Router();
 
 // // Get all tutors
-// router.get('/', TutorController.getAllTutors);
+router.get('/', TutorController.getAllTutors);
 
 // // Get trending tutors
 // router.get('/trending', TutorController.getTrendingTutors);
